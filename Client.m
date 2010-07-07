@@ -18,10 +18,15 @@
 	NSLog(@"Connecting to server...");
 
 	NSURL *url = [NSURL URLWithString:urlString];
-	NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:url];
+	NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] 
+									   initWithURL:url
+									   cachePolicy:NSURLRequestReloadIgnoringCacheData
+									   timeoutInterval:3600.0]; // Set the timeout to 60 min. It will reconnect.
 	
-	// Set the timeout to 15 min. It will reconnect.
-	[urlRequest setTimeoutInterval:900.0];
+	// Set user agent to something good
+	[urlRequest setValue:@"Nio/1.0" forHTTPHeaderField:@"User-Agent"];
+	
+
 	
 	// Keep this around for reconnects
 	notifyReq = urlRequest;
@@ -35,9 +40,28 @@
 	NSLog(@"conn: %@", notifyConn);
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+/*- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-	//NSLog(@"received");
+	NSLog(@"-received %@", connection);
+}*/
+
+-(NSURLRequest *)connection:(NSURLConnection*)connection 
+			willSendRequest:(NSURLRequest*)request
+		   redirectResponse:(NSHTTPURLResponse*)redirectResponse
+{
+	if (redirectResponse) {
+		for(NSString* key in [redirectResponse allHeaderFields]){
+			if ( [@"location" caseInsensitiveCompare:key] == NSOrderedSame ) {
+				NSLog(@"redirecting");
+				NSURL *url = [NSURL URLWithString:[[redirectResponse allHeaderFields] objectForKey:key]];
+				[notifyReq setURL: url];
+				return notifyReq;
+			}
+		}
+		return nil;
+	} else {
+		return request;
+	}
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
@@ -56,7 +80,7 @@
 		NSLog(@"did fail with error: %@", error);
 		// if hostname not found or net connection offline, try again after delay
 		if([error code] == -1003 || [error code] == -1009) {
-			[self performSelector:@selector(makeConnection) withObject:nil afterDelay:3.0];
+			[self performSelector:@selector(makeConnection) withObject:nil afterDelay:10.0];
 		}
 		else if([error code] != -1002) {
 			[self makeConnection];
@@ -70,6 +94,10 @@
 	{
 		
 		NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+		string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		if (![string hasPrefix:@"{"] || ![string hasSuffix:@"}"]) {
+			return;
+		}
 		NSLog(@"data: %@", string);
 		
 		// Keep the data in case we need it to stick around because we won't be posting the growl notif

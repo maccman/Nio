@@ -70,8 +70,8 @@
 	
 	NSBundle *bundle = [NSBundle mainBundle];
 	
-	statusImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"grin" ofType:@"png"]];
-	statusHighlightImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"grin" ofType:@"png"]];
+	statusImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"notifyicon" ofType:@"png"]];
+	statusHighlightImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"notifyicon" ofType:@"png"]];
 	
 	[statusItem setImage:statusImage];
 	[statusItem setAlternateImage:statusHighlightImage];

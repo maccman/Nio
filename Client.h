@@ -10,7 +10,7 @@
 
 @interface Client : NSObject {
 	NSURLConnection *notifyConn;
-	NSURLRequest *notifyReq;
+	NSMutableURLRequest *notifyReq;
 	NSURLConnection *iconConn;
 	NSDictionary *growlData;
 }
