@@ -14,7 +14,10 @@
 	NSURLConnection *iconConn;
 	NSDictionary *growlData;
 }
+
 @property (nonatomic, retain) NSDictionary *growlData;
+
 - (void)initRemoteHost:(NSString *)urlString;
 - (void)makeConnection;
+
 @end
