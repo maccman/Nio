@@ -33,13 +33,17 @@
 	return self;
 }
 
+- (void)makeConnection:(NSTimeInterval)delay {
+	[self performSelector:@selector(makeConnection) withObject:nil afterDelay:delay];
+	NSLog(@"trying to connect in: %f", delay);
+}
+
 - (void)makeConnection {
 	if(!notifyConn){
 		[notifyConn release];
 	}
-	
 	notifyConn = [[NSURLConnection alloc] initWithRequest:notifyReq delegate:self startImmediately:YES];
-	NSLog(@"conn: %@", notifyConn);
+	NSLog(@"connecting: %@", notifyConn);	
 }
 
 -(NSURLRequest *)connection:(NSURLConnection*)connection willSendRequest:(NSURLRequest*)request redirectResponse:(NSHTTPURLResponse*)redirectResponse {
@@ -61,7 +65,7 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
 	if([connection isEqualTo:notifyConn]) {
 		NSLog(@"connection finished");
-		[self makeConnection];
+		[self makeConnection:10.0];
 	}
 }
 
@@ -70,10 +74,10 @@
 		NSLog(@"did fail with error: %@", error);
 		// if hostname not found or net connection offline, try again after delay
 		if([error code] == -1003 || [error code] == -1009) {
-			[self performSelector:@selector(makeConnection) withObject:nil afterDelay:10.0];
+			[self makeConnection:10.0];
 		}
 		else if([error code] != -1002) {
-			[self makeConnection];
+			[self makeConnection:5.0];
 		}
 	}
 }
@@ -110,6 +114,7 @@
 			[task launch];
 		}
 		[hookScript release];
+		
 		// Get the icon from the json data
 		NSString *iconURLStr = [growlData objectForKey:@"icon"];
 		

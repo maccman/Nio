@@ -25,7 +25,6 @@
 		FA4DBF7C10CB27CE009B18B1 /* Growl-WithInstaller.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA4DBF7B10CB27CE009B18B1 /* Growl-WithInstaller.framework */; };
 		FA4DBF8410CB27D2009B18B1 /* Growl-WithInstaller.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA4DBF7B10CB27CE009B18B1 /* Growl-WithInstaller.framework */; };
 		FA4DBF8910CB29D4009B18B1 /* Growl Registration Ticket.growlRegDict in Resources */ = {isa = PBXBuildFile; fileRef = FA4DBF8810CB29D4009B18B1 /* Growl Registration Ticket.growlRegDict */; };
-		FAB70A9310CDBB4D003E3A72 /* grin.png in Resources */ = {isa = PBXBuildFile; fileRef = FAB70A9210CDBB4D003E3A72 /* grin.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -83,7 +82,6 @@
 		FA4DBF6C10CB26EF009B18B1 /* CJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializer.m; sourceTree = "<group>"; };
 		FA4DBF7B10CB27CE009B18B1 /* Growl-WithInstaller.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = "Growl-WithInstaller.framework"; sourceTree = "<group>"; };
 		FA4DBF8810CB29D4009B18B1 /* Growl Registration Ticket.growlRegDict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Growl Registration Ticket.growlRegDict"; sourceTree = "<group>"; };
-		FAB70A9210CDBB4D003E3A72 /* grin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grin.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,7 +161,6 @@
 			children = (
 				1F89659711E1FACC006EBAD1 /* notifyicon.png */,
 				1F47213210EA753A001CA131 /* APPL.icns */,
-				FAB70A9210CDBB4D003E3A72 /* grin.png */,
 				FA4DBF8810CB29D4009B18B1 /* Growl Registration Ticket.growlRegDict */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -267,7 +264,6 @@
 				FA4DBF8910CB29D4009B18B1 /* Growl Registration Ticket.growlRegDict in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
-				FAB70A9310CDBB4D003E3A72 /* grin.png in Resources */,
 				1F47213310EA753A001CA131 /* APPL.icns in Resources */,
 				1F89659811E1FACC006EBAD1 /* notifyicon.png in Resources */,
 			);
