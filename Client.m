@@ -15,8 +15,8 @@
 
 - (id)initRemoteHost:(NSString *)urlStringTemp {
 	if ((self = [super init])){
-		urlString = urlStringTemp;
-		[urlStringTemp retain];
+		// keep a copy 
+		urlString = [urlStringTemp copy];
 
 		NSLog(@"Init on Client...");
 		

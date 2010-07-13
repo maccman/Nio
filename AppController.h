@@ -14,7 +14,7 @@
 	NSStatusItem *statusItem;
 	NSImage *statusImage;
 	NSImage *statusHighlightImage;
-	Client *client;
+	NSMutableArray *clients;
 }
 
 -(IBAction)openHistory:(id)sender;

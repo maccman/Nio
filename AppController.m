@@ -22,6 +22,7 @@
                                       initWithContentsOfFile:filename
                                       encoding:NSASCIIStringEncoding
                                       error:&error];
+
 	if([stringFromFileAtPath length] == 0) {
 		NSLog(@"the file at path %@ is empty", stringFromFileAtPath);
 		[stringFromFileAtPath release];
@@ -35,13 +36,15 @@
 						   initWithContentsOfFile:nioFilename
 						   encoding:NSASCIIStringEncoding
 						   error:&error];
+
 	NSRange range = [nioString rangeOfString:stringFromFileAtPath];
+
 	if (range.location == NSNotFound) {
-		nioString = [nioString stringByAppendingString:stringFromFileAtPath];
-		[nioString writeToFile:nioFilename atomically:YES encoding:NSASCIIStringEncoding error:&error];
+		NSString *fullNioString = [NSString stringWithFormat:@"%@%@", nioString,stringFromFileAtPath];
+		[fullNioString writeToFile:nioFilename atomically:YES encoding:NSASCIIStringEncoding error:&error];
 
 		NSString *newUrl = [stringFromFileAtPath stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-		client = [[Client alloc] initRemoteHost:newUrl];
+		[clients addObject:[[Client alloc] initRemoteHost:newUrl]];
 
 		[GrowlApplicationBridge notifyWithTitle:@"Installed Listen URL"
 								description:@"Now listening to notification stream" 
@@ -59,12 +62,15 @@
 									   isSticky:NO
 								   clickContext:nil];
 	}
+
 	[nioString release];
 	[stringFromFileAtPath release];
 	return YES;
 }
 
 - (void) awakeFromNib{
+	clients = [[NSMutableArray alloc] init];
+
 	statusItem = [[[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength] retain];
 	
 	NSBundle *bundle = [NSBundle mainBundle];
@@ -84,7 +90,6 @@
 	NSBundle *myBundle = [NSBundle bundleForClass:[AppController class]];
 	NSString *growlPath = [[myBundle privateFrameworksPath] stringByAppendingPathComponent:@"Growl-WithInstaller.framework"];
 	NSBundle *growlBundle = [NSBundle bundleWithPath:growlPath];
-
 	
 	if (growlBundle && [growlBundle load]) {
 		[GrowlApplicationBridge setGrowlDelegate:self]; 
@@ -92,14 +97,13 @@
 	else{
 		NSLog(@"Could not load Growl.framework");
 	}
-	
-	
+		
 	NSString *filepath = [NSString stringWithFormat:@"%@/.Nio", NSHomeDirectory()];
 	NSError *error;
-	NSString *nioData = [[NSString alloc]
+	NSString *nioData = [[[NSString alloc]
                                       initWithContentsOfFile:filepath
                                       encoding:NSASCIIStringEncoding
-                                      error:&error];
+                                      error:&error] autorelease];
 	nioData = [nioData stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	NSLog(@"contents of file: %@", nioData);
 	
@@ -115,8 +119,7 @@
 									   priority:1
 									   isSticky:NO
 								   clickContext:@"http://www.notify.io/getstarted"]; 
-	}
-	else {
+	} else {
 		NSArray *urls = [nioData componentsSeparatedByString:@"\n"];
 		[GrowlApplicationBridge notifyWithTitle:@"Nio started"
 									description:[NSString stringWithFormat:@"Listening to %d notification streams", [urls count]] 
@@ -126,12 +129,9 @@
 									   isSticky:NO
 								   clickContext:nil];
 		for (NSString *url in urls) {
-			[[Client alloc] initRemoteHost:url];
+			[clients addObject:[[Client alloc] initRemoteHost:url]];
 		}
-	
 	}
-	
-	
 }
 
 
@@ -149,8 +149,7 @@
 
 #pragma mark GrowlApplicationBridgeDelegate method 
 
-- (NSDictionary *)registrationDictionaryForGrowl;
-{
+- (NSDictionary *)registrationDictionaryForGrowl; {
 	NSMutableDictionary *regDictionary = [[[NSMutableDictionary alloc] initWithCapacity:5] autorelease];
 	
 	// An NSArray of all possible names of notifications.
@@ -172,9 +171,8 @@
 }
 
 - (void) dealloc{
-	if(client){
-		[client release];
-	}
+	[clients release];
+	[statusItem release];
 	[statusImage release];
 	[statusHighlightImage release];
 	[super dealloc];
