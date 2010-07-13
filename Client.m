@@ -92,7 +92,7 @@
 		// until we get the icon
 		
 		NSData *jsonData = [string dataUsingEncoding:NSUTF32BigEndianStringEncoding];
-		[string release];
+//		[string release];
 		NSError *error = nil;
 		NSDictionary *messageDict = [[CJSONDeserializer deserializer] deserializeAsDictionary:jsonData error:&error];
 		self.growlData = messageDict;
