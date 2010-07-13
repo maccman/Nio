@@ -1,5 +1,6 @@
 Nio.xcodeproj/*.pbxuser
 Nio.xcodeproj/*.perspective
 Nio.xcodeproj/*.perspectivev3
+Nio.xcodeproj/*.mode1v3
 .DS_Store
 build
