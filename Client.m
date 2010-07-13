@@ -13,19 +13,24 @@
 
 @synthesize growlData;
 
-- (void)initRemoteHost:(NSString *)urlString {
-	NSLog(@"Connecting to server...");
+- (id)initRemoteHost:(NSString *)urlStringTemp {
+	if ((self = [super init])){
+		urlString = urlStringTemp;
+		[urlStringTemp retain];
 
-	NSURL *url = [NSURL URLWithString:urlString];
-	notifyReq = [[NSMutableURLRequest alloc] 
-									   initWithURL:url
-									   cachePolicy:NSURLRequestReloadIgnoringCacheData
-									   timeoutInterval:3600.0]; // Set the timeout to 60 min. It will reconnect.
-	
-	// Set user agent to something good
-	[notifyReq setValue:@"Nio/1.0" forHTTPHeaderField:@"User-Agent"];
-	
-	[self makeConnection];
+		NSLog(@"Init on Client...");
+		
+		NSURL *url = [NSURL URLWithString:urlString];
+		notifyReq = [[NSMutableURLRequest alloc] 
+					 initWithURL:url
+					 cachePolicy:NSURLRequestReloadIgnoringCacheData
+					 timeoutInterval:3600.0]; // Set the timeout to 60 min. It will reconnect.
+		
+		// Set user agent to something good
+		[notifyReq setValue:@"Nio/1.0" forHTTPHeaderField:@"User-Agent"];
+		[self makeConnection];		
+	}
+	return self;
 }
 
 - (void)makeConnection {
@@ -148,6 +153,7 @@
 }
 
 - (void) dealloc{
+	[urlString release];
 	[notifyReq release];
 	[notifyConn release];
 	[super dealloc];

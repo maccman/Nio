@@ -11,24 +11,22 @@
 
 @implementation AppController
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
-{
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 	NSLog(@"launched");
 }
 
-- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
-{
+- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename {
 	NSError *error;
+	
 	NSString *stringFromFileAtPath = [[NSString alloc]
                                       initWithContentsOfFile:filename
                                       encoding:NSASCIIStringEncoding
                                       error:&error];
-	if([stringFromFileAtPath length] == 0)
-	{
+	if([stringFromFileAtPath length] == 0) {
 		NSLog(@"the file at path %@ is empty", stringFromFileAtPath);
+		[stringFromFileAtPath release];
 		return NO;
-	}
-	else {
+	} else {
 		NSLog(@"loading url: %@", stringFromFileAtPath);
 	}
 
@@ -41,10 +39,10 @@
 	if (range.location == NSNotFound) {
 		nioString = [nioString stringByAppendingString:stringFromFileAtPath];
 		[nioString writeToFile:nioFilename atomically:YES encoding:NSASCIIStringEncoding error:&error];
-	
+
 		NSString *newUrl = [stringFromFileAtPath stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-		[[Client alloc] initRemoteHost:newUrl];
-	
+		client = [[Client alloc] initRemoteHost:newUrl];
+
 		[GrowlApplicationBridge notifyWithTitle:@"Installed Listen URL"
 								description:@"Now listening to notification stream" 
 						   notificationName:@"Nio" 
@@ -52,8 +50,7 @@
 								   priority:1
 								   isSticky:NO
 							   clickContext:nil];
-	}
-	else {
+	} else {
 		[GrowlApplicationBridge notifyWithTitle:@"Skipped Listen URL"
 									description:@"This Listen URL was already installed" 
 							   notificationName:@"Nio" 
@@ -62,6 +59,8 @@
 									   isSticky:NO
 								   clickContext:nil];
 	}
+	[nioString release];
+	[stringFromFileAtPath release];
 	return YES;
 }
 
@@ -135,11 +134,6 @@
 	
 }
 
-- (void) dealloc{
-	[statusImage release];
-	[statusHighlightImage release];
-	[super dealloc];
-}
 
 - (IBAction)openHistory:(id)sender{
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.notify.io/history"]];
@@ -172,11 +166,18 @@
 	return regDictionary;
 }
 
-- (void) growlNotificationWasClicked:(id)clickContext;
-{
+- (void) growlNotificationWasClicked:(id)clickContext; {
 	NSLog(@"growlNotificationWasClicked:%@", clickContext);
-	
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:clickContext]];
+}
+
+- (void) dealloc{
+	if(client){
+		[client release];
+	}
+	[statusImage release];
+	[statusHighlightImage release];
+	[super dealloc];
 }
 
 @end

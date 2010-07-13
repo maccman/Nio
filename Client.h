@@ -9,6 +9,7 @@
 #import "Growl-WithInstaller/GrowlApplicationBridge.h"
 
 @interface Client : NSObject {
+	NSString *urlString;
 	NSURLConnection *notifyConn;
 	NSMutableURLRequest *notifyReq;
 	NSURLConnection *iconConn;
@@ -17,7 +18,7 @@
 
 @property (nonatomic, retain) NSDictionary *growlData;
 
-- (void)initRemoteHost:(NSString *)urlString;
+- (id)initRemoteHost:(NSString *)urlString;
 - (void)makeConnection;
 
 @end
