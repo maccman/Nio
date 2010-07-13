@@ -81,7 +81,7 @@
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
 	if([connection isEqualTo:notifyConn]) {
 		
-		NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+		NSString *string = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
 		string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		if (![string hasPrefix:@"{"] || ![string hasSuffix:@"}"]) {
 			return;
@@ -92,7 +92,6 @@
 		// until we get the icon
 		
 		NSData *jsonData = [string dataUsingEncoding:NSUTF32BigEndianStringEncoding];
-//		[string release];
 		NSError *error = nil;
 		NSDictionary *messageDict = [[CJSONDeserializer deserializer] deserializeAsDictionary:jsonData error:&error];
 		self.growlData = messageDict;
