@@ -9,8 +9,6 @@
 #import "Client.h"
 #import "Growl-WithInstaller/GrowlApplicationBridge.h"
 
-//TODO: Is hard-coding the path the only way?
-#define APP_PATH @"/Applications/Nio.app"
 
 @implementation AppController
 
@@ -158,7 +156,7 @@
 
 -(IBAction)toggleOpenAtLogin:(id)sender{
 	
-	CFURLRef url = (CFURLRef)[NSURL fileURLWithPath:APP_PATH];
+	CFURLRef url = (CFURLRef)[NSURL fileURLWithPath:[[NSBundle mainBundle] bundlePath]];
 	
 	// Create a reference to the shared file list.
 	LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
@@ -224,7 +222,7 @@
 	for (id item in loginItemsArray) {		
 		LSSharedFileListItemRef itemRef = (LSSharedFileListItemRef)item;
 		if (LSSharedFileListItemResolve(itemRef, 0, (CFURLRef*) &thePath, NULL) == noErr) {
-			if ([[(NSURL *)thePath path] hasPrefix:APP_PATH])
+			if ([[(NSURL *)thePath path] hasPrefix:[[NSBundle mainBundle] bundlePath]])
 				LSSharedFileListItemRemove(theLoginItemsRefs, itemRef); // Deleting the item
 		}
 	}

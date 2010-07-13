@@ -20,5 +20,6 @@
 -(IBAction)openSources:(id)sender;
 -(IBAction)openSettings:(id)sender;
 -(IBAction)toggleOpenAtLogin:(id)sender;
-
+- (void)disableLoginItemWithLoginItemsReference:(LSSharedFileListRef )theLoginItemsRefs ForPath:(CFURLRef)thePath;
+- (void)enableLoginItemWithLoginItemsReference:(LSSharedFileListRef )theLoginItemsRefs ForPath:(CFURLRef)thePath;
 @end

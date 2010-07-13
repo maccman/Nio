@@ -19,5 +19,6 @@
 
 - (void)initRemoteHost:(NSString *)urlString;
 - (void)makeConnection;
+- (void)makeConnection:(NSTimeInterval)delay;
 
 @end
